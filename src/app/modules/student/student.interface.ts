@@ -20,14 +20,13 @@ export type Guardian ={
         motherName: string;
         motherOccupation: string;
         motherContactNo: string;
-    
 }
 
 export type Student= {
     id: string;
-   name:UserName;
-   gender: "male" | "female";
-   dateOfBirth: string;
+    name:UserName;
+    gender: "male" | "female";
+    dateOfBirth?: string;  
     email: string;
     contactNumber: string;
     emergancyContactNo: string;
