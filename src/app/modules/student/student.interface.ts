@@ -1,4 +1,3 @@
-import { Schema, model, connect } from 'mongoose';
 
 
 export type UserName = {
@@ -36,5 +35,5 @@ export type Student= {
     guardian: Guardian;
     localGuardian: LocalGuardian;
     profileImage?: string;
-    isActive: "active" | "inactive";
+    isActive: "active" | "block";
     }
