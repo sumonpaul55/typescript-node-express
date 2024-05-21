@@ -82,10 +82,10 @@ const studenSchema = new Schema<Student>({
   dateOfBirth: String,
   email: {
     type: String,
-    requierd: true,
+    requerd: true,
   },
   contactNumber: { type: String, required: true },
-  emergancyContactNo: { type: String, required: true },
+  emergencyContactNo: { type: String, required: true },
   bloodGroup: {
     type: String,
     enum: {
@@ -95,11 +95,11 @@ const studenSchema = new Schema<Student>({
   },
   presentAddress: {
     type: String,
-    requierd: true,
+    required: true,
   },
   permenentAdress: {
     type: String,
-    requierd: true,
+    required: true,
   },
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
