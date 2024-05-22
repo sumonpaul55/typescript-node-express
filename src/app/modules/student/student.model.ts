@@ -1,7 +1,11 @@
 import { Schema, model, connect } from "mongoose";
-import { Guardian, LocalGuardian, Student, UserName } from "./student.interface";
+import { TLocalGuardian, StudentMethods, TStudent, TUserName, TGuardian, StudentModel } from "./student.interface";
+import bcrypt from "bcrypt";
+// const bcrypt = require('bcrypt');
 
-const userNameSchema = new Schema<UserName>({
+import config from "../../config";
+
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, "first name is required"],
@@ -24,7 +28,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -56,7 +60,7 @@ const guardianSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -75,8 +79,9 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const studenSchema = new Schema<Student>({
+const studenSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   name: { type: userNameSchema, required: true },
   gender: { type: String, enum: ["male", "female"] },
   dateOfBirth: String,
@@ -113,5 +118,23 @@ const studenSchema = new Schema<Student>({
   },
 });
 
+// pre save middlewar will work for
+studenSchema.pre("save", async function (next) {
+  // hasing password to save into db
+  const user = this; // refer the document
+  user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALTROUND));
+  next();
+});
+// post save middlewar/hooks
+studenSchema.post("save", function (doc, next) {
+  // after the save
+  doc.password = "";
+  next();
+});
+
+studenSchema.methods.isUserExist = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
 // creating a model
-export const StudentModel = model<Student>("Student", studenSchema);
+export const Student = model<TStudent, StudentModel>("Student", studenSchema);

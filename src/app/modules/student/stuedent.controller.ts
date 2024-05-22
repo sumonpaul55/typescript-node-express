@@ -20,7 +20,6 @@ const createStudent = async (req: Request, res: Response) => {
     // data validation using zod schema
 
     const zodValidationData = studentValidationSchema.parse(studentData);
-    console.log(zodValidationData);
     const result = await StudentServices.createStudentDB(zodValidationData);
 
     res.status(200).json({
@@ -28,11 +27,10 @@ const createStudent = async (req: Request, res: Response) => {
       message: "Student is created successfully",
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: `Something went wrong`,
-      data: error,
+      message: error.message || `Something went wrong`,
     });
   }
 };
