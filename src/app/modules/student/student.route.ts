@@ -3,7 +3,7 @@ import { studenntController } from "./stuedent.controller";
 
 const router = express.Router();
 // will call controller func
-router.post("/create-student", studenntController.createStudent);
+// router.post("/create-student", studenntController.createStudent);
 
 router.get("/getStudent", studenntController.getAllStudent);
 
