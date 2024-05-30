@@ -3,8 +3,8 @@ import { UserServices } from "./user.service";
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    const studentData = req.body;
-    const result = await UserServices.createStudentDb(studentData);
+    const { password, studentData } = req.body;
+    const result = await UserServices.createStudentDb(password, studentData);
     res.status(200).json({
       success: false,
       message: "Student added Successfully",
