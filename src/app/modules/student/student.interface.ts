@@ -1,4 +1,4 @@
-import { Model, Schema, Types } from "mongoose";
+import { Model, Types } from "mongoose";
 
 export type TUserName = {
   firstName: string;
@@ -37,7 +37,6 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImage?: string;
-  isActive: "active" | "block";
 };
 
 export type StudentMethods = {

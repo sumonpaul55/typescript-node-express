@@ -1,5 +1,6 @@
 import config from "../../config";
 import { TStudent } from "../student/student.interface";
+import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -14,15 +15,19 @@ const createStudentDb = async (password: string, studentData: TStudent) => {
   userData.id = "20300001";
 
   // create a user
-  const result = await User.create(userData);
+  const newUser = await User.create(userData);
+  // console.log(newUser);
   // create a student
-  if (Object.keys(result).length) {
+  if (Object.keys(newUser).length) {
     // set id, _id as user
-    studentData.id = result.id;
-    studentData.user = result._id;
+    studentData.id = newUser.id;
+    studentData.user = newUser._id; // reference id
+
+    const newStudent = await Student.create(studentData);
+    return newStudent;
   }
 };
 
-export const UserServices = {
+export const userServices = {
   createStudentDb,
 };

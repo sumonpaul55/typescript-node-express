@@ -1,9 +1,9 @@
 import { Schema, model, connect } from "mongoose";
 import { TLocalGuardian, StudentMethods, TStudent, TUserName, TGuardian, StudentModel } from "./student.interface";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 // const bcrypt = require('bcrypt');
 
-import config from "../../config";
+// import config from "../../config";
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -81,8 +81,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 
 const studenSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
-  user: { type: Schema.ObjectId, required: [true, "User id is requred"], unique: true, ref: "User" },
-  password: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: [true, "User id is requred"], unique: true, ref: "User" },
   name: { type: userNameSchema, required: true },
   gender: { type: String, enum: ["male", "female"] },
   dateOfBirth: String,
@@ -110,28 +109,21 @@ const studenSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
-  isActive: {
-    type: String,
-    enum: {
-      values: ["active", "block"],
-      message: "{VALUES} is not supported",
-    },
-  },
 });
 
 // pre save middlewar will work for
-studenSchema.pre("save", async function (next) {
-  // hasing password to save into db
-  const user = this; // refer the document
-  user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALTROUND));
-  next();
-});
+// studenSchema.pre("save", async function (next) {
+//   // hasing password to save into db
+//   const user = this; // refer the document
+//   user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALTROUND));
+//   next();
+// });
 // post save middlewar/hooks
-studenSchema.post("save", function (doc, next) {
-  // after the save
-  doc.password = "";
-  next();
-});
+// studenSchema.post("save", function (doc, next) {
+//   // after the save
+//   doc.password = "";
+//   next();
+// });
 
 studenSchema.methods.isUserExist = async function (id: string) {
   const existingUser = await Student.findOne({ id });

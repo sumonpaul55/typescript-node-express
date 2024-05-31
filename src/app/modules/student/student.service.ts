@@ -1,4 +1,3 @@
-import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
 
 const getAllStudentsFromDb = async () => {
@@ -11,7 +10,6 @@ const getSingleStudentFromDb = async (id: string) => {
   return result;
 };
 export const StudentServices = {
-  createStudentDB,
   getAllStudentsFromDb,
   getSingleStudentFromDb,
 };

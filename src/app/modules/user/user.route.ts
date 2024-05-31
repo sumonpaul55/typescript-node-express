@@ -1,7 +1,7 @@
 import express from "express";
-import { userController } from "./user.controller";
+import { userControllers } from "./user.controller";
 
 const router = express.Router();
-router.post("/create-student", userController.createStudent);
+router.post("/create-student", userControllers.createStudent);
 
-export const UserRouter = router;
+export const UserRoute = router;
