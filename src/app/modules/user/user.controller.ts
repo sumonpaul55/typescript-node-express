@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userServices } from "./user.service";
+import studentValidationZod from "../student/student.validaton";
 
-const createStudent = async (req: Request, res: Response) => {
+const createStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { password, studentData } = req.body;
     const result = await userServices.createStudentDb(password, studentData);
@@ -10,11 +11,8 @@ const createStudent = async (req: Request, res: Response) => {
       message: "Student added Successfully",
       data: result,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Something went worng",
-    });
+  } catch (error) {
+    next(error);
   }
 };
 

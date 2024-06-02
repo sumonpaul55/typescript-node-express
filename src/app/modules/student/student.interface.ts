@@ -4,6 +4,7 @@ export type TUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
+  _id: boolean;
 };
 
 export type TLocalGuardian = {
@@ -19,6 +20,7 @@ export type TGuardian = {
   motherName: string;
   motherOccupation: string;
   motherContactNo: string;
+  _id: boolean;
 };
 
 export type TStudent = {
@@ -39,8 +41,4 @@ export type TStudent = {
   profileImage?: string;
 };
 
-export type StudentMethods = {
-  isUserExist(id: string): Promise<TStudent | null>;
-};
-
-export type StudentModel = Model<TStudent, Record<string, never>, StudentMethods>;
+export type StudentModel = Model<TStudent, Record<string, never>>;

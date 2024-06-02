@@ -1,5 +1,5 @@
 import { Schema, model, connect } from "mongoose";
-import { TLocalGuardian, StudentMethods, TStudent, TUserName, TGuardian, StudentModel } from "./student.interface";
+import { TLocalGuardian, TStudent, TUserName, TGuardian, StudentModel } from "./student.interface";
 // import bcrypt from "bcrypt";
 // const bcrypt = require('bcrypt');
 
@@ -26,6 +26,7 @@ const userNameSchema = new Schema<TUserName>({
     type: String,
     required: [true, "Last name is required"],
   },
+  _id: Boolean,
 });
 
 const guardianSchema = new Schema<TGuardian>({
@@ -58,6 +59,7 @@ const guardianSchema = new Schema<TGuardian>({
     required: true,
     trim: true,
   },
+  _id: Boolean,
 });
 
 const localGuardianSchema = new Schema<TLocalGuardian>({
@@ -79,8 +81,8 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studenSchema = new Schema<TStudent, StudentModel, StudentMethods>({
-  id: { type: String, required: true, unique: true },
+const studenSchema = new Schema<TStudent, StudentModel>({
+  id: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: [true, "User id is requred"], unique: true, ref: "User" },
   name: { type: userNameSchema, required: true },
   gender: { type: String, enum: ["male", "female"] },
@@ -111,23 +113,9 @@ const studenSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   profileImage: { type: String },
 });
 
-// pre save middlewar will work for
-// studenSchema.pre("save", async function (next) {
-//   // hasing password to save into db
-//   const user = this; // refer the document
-//   user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALTROUND));
-//   next();
-// });
-// post save middlewar/hooks
-// studenSchema.post("save", function (doc, next) {
-//   // after the save
-//   doc.password = "";
-//   next();
-// });
-
-studenSchema.methods.isUserExist = async function (id: string) {
-  const existingUser = await Student.findOne({ id });
-  return existingUser;
-};
+// studenSchema.methods.isUserExist = async function (id: string) {
+//   const existingUser = await Student.findOne({ id });
+//   return existingUser;
+// };
 // creating a model
-export const Student = model<TStudent, StudentModel>("Student", studenSchema);
+export const Student = model<TStudent>("Student", studenSchema);

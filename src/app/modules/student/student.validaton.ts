@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { z } from "zod";
 
 const userNameValidationSchema = z.object({
@@ -22,9 +23,9 @@ const localGuardianValidationSchema = z.object({
   address: z.string().min(1, "Address is required"),
 });
 
-const studentValidationSchema = z.object({
+const studentValidationZod = z.object({
   id: z.string().min(1, "ID is required"),
-  password: z.string().max(20, "Password should not more than 20 character"),
+  user: z.any(),
   name: userNameValidationSchema,
   gender: z.enum(["male", "female"]),
   dateOfBirth: z.string().optional(),
@@ -37,8 +38,8 @@ const studentValidationSchema = z.object({
   guardian: guardianValidationSchema,
   localGuardian: localGuardianValidationSchema,
   profileImage: z.string().optional(),
-  isActive: z.enum(["active", "block"]),
+  // isActive: z.enum(["active", "block"]),
 });
 
 // Export the schema
-export default studentValidationSchema;
+export default studentValidationZod;
