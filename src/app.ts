@@ -1,10 +1,8 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
-import { StudentRoute } from "./app/modules/student/student.route";
-import { UserRoute } from "./app/modules/user/user.route";
 import globalErrorHandler from "./app/middleWare/globalErrorHandler";
 import notFound from "./app/middleWare/notFound";
-import router from "./app/route";
+import router from "./app/routes/index";
 
 const app: Application = express();
 // user cors

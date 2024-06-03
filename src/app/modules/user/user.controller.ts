@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { userServices } from "./user.service";
 import studentValidationZod from "../student/student.validaton";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 
-const createStudent = async (req: Request, res: Response, next: NextFunction) => {
+const createStudent: RequestHandler = async (req, res, next) => {
   try {
     const { password, studentData } = req.body;
     const result = await userServices.createStudentDb(password, studentData);
