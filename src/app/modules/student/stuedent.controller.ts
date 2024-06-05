@@ -3,16 +3,11 @@ import { StudentServices } from "./student.service";
 import studentValidationSchema from "./student.validaton";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
-import { Student } from "./student.model";
+// import { Student } from "./student.model";
+import catchAsync from "../../utils/catchAsync";
 // import studentJoiSchema from "./student.validation";
 
-const catchAsync = (fn: RequestHandler) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
-  };
-};
-
-const getAllStudent = catchAsync(async (req, res, next) => {
+const getAllStudent = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDb();
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -32,7 +27,7 @@ const getOneStudent: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-const deleteStudent = catchAsync(async (req, res, next) => {
+const deleteStudent = catchAsync(async (req, res) => {
   const result = await StudentServices.deleteStudentDb(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,

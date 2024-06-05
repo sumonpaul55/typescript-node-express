@@ -7,6 +7,7 @@ import httpStatus from "http-status";
 const createStudent: RequestHandler = async (req, res, next) => {
   try {
     const { password, studentData } = req.body;
+
     const result = await userServices.createStudentDb(password, studentData);
     // res.status(200).json({
     //   success: true,
