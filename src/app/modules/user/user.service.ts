@@ -1,7 +1,6 @@
 import config from "../../config";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
-import studentValidationZod from "../student/student.validaton";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -22,9 +21,7 @@ const createStudentDb = async (password: string, studentData: TStudent) => {
     studentData.id = newUser.id;
     studentData.user = newUser._id; // reference id
 
-    const validateData = studentValidationZod.parse(studentData);
-
-    const newStudent = await Student.create(validateData);
+    const newStudent = await Student.create(studentData);
     return newStudent;
   }
 };
