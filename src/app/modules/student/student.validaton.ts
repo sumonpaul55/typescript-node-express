@@ -29,7 +29,7 @@ const createStudentValidationSchema = z.object({
     studentData: z.object({
       name: userNameValidationSchema,
       gender: z.enum(["male", "female"]),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().date().optional(),
       email: z.string().email("Invalid email format").min(1, "Email is required"),
       contactNumber: z.string().min(1, "Contact number is required"),
       emergencyContactNo: z.string().min(1, "Emergency contact number is required"),
