@@ -9,3 +9,6 @@ const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
 export const AcademicSemisterService = {
   createAcademicSemisterDb,
 };
+
+// validation check
+// shoudn't create same samister in the sam year
