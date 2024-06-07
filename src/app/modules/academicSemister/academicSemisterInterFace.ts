@@ -22,3 +22,10 @@ export type TAcademicSemister = {
   startMonth: TMonths;
   endMonth: TMonths;
 };
+
+export type TAcademicSemisterMapper = {
+  [Key: string]: string;
+  // Autumn: "01";
+  // Summer: "02";
+  // Fall: "03";
+};
