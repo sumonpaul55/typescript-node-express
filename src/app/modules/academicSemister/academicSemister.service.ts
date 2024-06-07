@@ -23,11 +23,20 @@ const getSemisterById = async (id: string) => {
   const result = await AcademicSemister.findById(id);
   return result;
 };
-
+// update the academic semister data
+const updateOneSemister = async (id: string, payLoad: TAcademicSemister) => {
+  const filter = { _id: id };
+  const updateDocs = payLoad;
+  const updatedData = await AcademicSemister.findOneAndUpdate(filter, updateDocs, {
+    new: true,
+  });
+  return updatedData;
+};
 export const AcademicSemisterService = {
   createAcademicSemisterDb,
   getAcademicSemisterDB,
   getSemisterById,
+  updateOneSemister,
 };
 
 // validation check

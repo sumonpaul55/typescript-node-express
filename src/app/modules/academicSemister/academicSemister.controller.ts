@@ -34,9 +34,22 @@ const getAcademicSemisterOne = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// update academic semister
+const updateSemister = catchAsync(async (req, res) => {
+  const data = req.body;
+  const id = req.params.id;
+  const result = await AcademicSemisterService.updateOneSemister(id, data);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "This Semister Updated Successfully",
+    data: result,
+  });
+});
 
 export const AcademicSemisterController = {
   createAcademicSemister,
   getAcademicSemister,
   getAcademicSemisterOne,
+  updateSemister,
 };
