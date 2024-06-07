@@ -13,8 +13,21 @@ const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
   return result;
 };
 
+const getAcademicSemisterDB = async () => {
+  return await AcademicSemister.find();
+};
+
+// get academic semister by id
+const getSemisterById = async (id: string) => {
+  // console.log(id);
+  const result = await AcademicSemister.findById(id);
+  return result;
+};
+
 export const AcademicSemisterService = {
   createAcademicSemisterDb,
+  getAcademicSemisterDB,
+  getSemisterById,
 };
 
 // validation check

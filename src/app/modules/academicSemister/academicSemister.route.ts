@@ -10,5 +10,7 @@ router.post(
   validateRequest(academicSemisterValidation.createAcademicSemisterValidationSchema),
   AcademicSemisterController.createAcademicSemister
 );
+router.get("/", AcademicSemisterController.getAcademicSemister);
+router.get("/:id", AcademicSemisterController.getAcademicSemisterOne);
 
 export const AcademicSemisterRoutes = router;
