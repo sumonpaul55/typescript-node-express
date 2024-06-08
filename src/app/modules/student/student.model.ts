@@ -111,6 +111,8 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
+  admissionSemister: { type: Schema.Types.ObjectId, ref: "AcademicSemister" },
+  isDeleted: { type: Boolean, default: false },
 });
 
 // studenSchema.methods.isUserExist = async function (id: string) {

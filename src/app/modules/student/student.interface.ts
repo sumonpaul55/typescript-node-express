@@ -39,6 +39,8 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImage?: string;
+  admissionSemister: Types.ObjectId;
+  isDeleted: boolean;
 };
 
 export type StudentModel = Model<TStudent, Record<string, never>>;

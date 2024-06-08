@@ -24,9 +24,13 @@ const getSemisterById = async (id: string) => {
   return result;
 };
 // update the academic semister data
-const updateOneSemister = async (id: string, payLoad: TAcademicSemister) => {
+const updateOneSemister = async (id: string, payLoad: Partial<TAcademicSemister>) => {
   const filter = { _id: id };
   const updateDocs = payLoad;
+
+  if (payLoad.name && payLoad.code && academicSemisterNameCodeMapper[payLoad.name] !== payLoad.code) {
+    throw new Error("Invalide semister code");
+  }
   const updatedData = await AcademicSemister.findOneAndUpdate(filter, updateDocs, {
     new: true,
   });

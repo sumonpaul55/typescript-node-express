@@ -39,6 +39,7 @@ const createStudentValidationSchema = z.object({
       guardian: guardianValidationSchema,
       localGuardian: localGuardianValidationSchema,
       profileImage: z.string().optional(),
+      admissionSemister: z.string(),
     }),
   }),
   // isActive: z.enum(["active", "block"]),
