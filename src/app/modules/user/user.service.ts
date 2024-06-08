@@ -16,19 +16,22 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
   userData.role = "student";
   // find academic semister info
   const admissionSemisterData: any = await AcademicSemister.findById(payLoad.admissionSemister);
-  // set mannually generated id
-  userData.id = await generateStudentId(admissionSemisterData);
-  // create a user
-  const newUser = await User.create(userData);
-  // create a student
-  if (Object.keys(newUser).length) {
-    // set id, _id as user
-    payLoad.id = newUser.id;
-    payLoad.user = newUser._id; // reference id
+  // set dynamic generated id
+  if (admissionSemisterData) {
+    userData.id = await generateStudentId(admissionSemisterData);
+    // create a user
+    const newUser = await User.create(userData);
+    // create a student
+    if (Object.keys(newUser).length) {
+      // set id, _id as user
+      payLoad.id = newUser.id;
+      payLoad.user = newUser._id; // reference id
 
-    const newStudent = await Student.create(payLoad);
-    return newStudent;
+      const newStudent = await Student.create(payLoad);
+      return newStudent;
+    }
   }
+  throw new Error(`there is no academic Semister`);
 };
 
 export const userServices = {
