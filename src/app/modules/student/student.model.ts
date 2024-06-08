@@ -32,31 +32,31 @@ const userNameSchema = new Schema<TUserName>({
 const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
-    required: true,
+    required: [true, "Father name is required"],
   },
   fatherOccupation: {
     type: String,
-    required: true,
+    required: [true, "Father Occupation is required"],
     trim: true,
   },
   fatherContactNo: {
     type: String,
-    required: true,
+    required: [true, "fatherContactNo is required"],
     trim: true,
   },
   motherName: {
     type: String,
-    required: true,
+    required: [true, "motherName is required"],
     trim: true,
   },
   motherOccupation: {
     type: String,
-    required: true,
+    required: [true, "motherOccupation is required"],
     trim: true,
   },
   motherContactNo: {
     type: String,
-    required: true,
+    required: [true, "motherContactNo is required"],
     trim: true,
   },
   _id: Boolean,
@@ -65,34 +65,35 @@ const guardianSchema = new Schema<TGuardian>({
 const localGuardianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
-    required: true,
+    required: [true, "Local name is required"],
   },
   occupation: {
     type: String,
-    required: true,
+    required: [true, "occupation is required"],
   },
   contactNo: {
     type: String,
-    required: true,
+    required: [true, "contact no is required"],
   },
   address: {
     type: String,
-    required: true,
+    required: [true, "address is required"],
   },
 });
 
 const studenSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true },
+  id: { type: String, required: [true, "id is required"], unique: true },
   user: { type: Schema.Types.ObjectId, required: [true, "User id is requred"], unique: true, ref: "User" },
-  name: { type: userNameSchema, required: true },
+  name: { type: userNameSchema, required: [true, "name is required"] },
   gender: { type: String, enum: ["male", "female"] },
   dateOfBirth: { type: Date },
   email: {
     type: String,
     requerd: true,
+    unique: true,
   },
-  contactNumber: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true },
+  contactNumber: { type: String, required: [true, "contact number is required"] },
+  emergencyContactNo: { type: String, required: [true, "emergency number is required"] },
   bloodGroup: {
     type: String,
     enum: {
@@ -102,14 +103,14 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   },
   presentAddress: {
     type: String,
-    required: true,
+    required: [true, "presnet address is required"],
   },
   permenentAdress: {
     type: String,
-    required: true,
+    required: [true, "permanent address is required"],
   },
-  guardian: { type: guardianSchema, required: true },
-  localGuardian: { type: localGuardianSchema, required: true },
+  guardian: { type: guardianSchema, required: [true, "guardian is required"] },
+  localGuardian: { type: localGuardianSchema, required: [true, "local guardian is required"] },
   profileImage: { type: String },
   admissionSemister: { type: Schema.Types.ObjectId, ref: "AcademicSemister" },
   isDeleted: { type: Boolean, default: false },
