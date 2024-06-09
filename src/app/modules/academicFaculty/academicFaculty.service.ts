@@ -7,8 +7,7 @@ const createAcademicFacultyDb = async (payLoad: TAcademicFaculty) => {
 };
 
 const getAcademicFacultiesFromDb = async () => {
-  const result = await AcademicFaculty.find();
-  return result;
+  return await AcademicFaculty.find();
 };
 
 const getSingleAcademicFaculty = async (id: string) => {

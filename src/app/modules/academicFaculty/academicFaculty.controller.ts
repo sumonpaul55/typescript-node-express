@@ -6,6 +6,7 @@ import { academicFacultyServices } from "./academicFaculty.service";
 const createAcademicFaculty = catchAsync(async (req, res) => {
   const data = req.body;
   const result = await academicFacultyServices.createAcademicFacultyDb(data);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -15,7 +16,7 @@ const createAcademicFaculty = catchAsync(async (req, res) => {
 });
 
 const getAcademicFaculty = catchAsync(async (req, res) => {
-  const result = academicFacultyServices.getAcademicFacultiesFromDb();
+  const result = await academicFacultyServices.getAcademicFacultiesFromDb();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -25,8 +26,8 @@ const getAcademicFaculty = catchAsync(async (req, res) => {
 });
 
 const getSingleAcademicFaculty = catchAsync(async (req, res) => {
-  const id = req.params.id;
-  const result = academicFacultyServices.getSingleAcademicFaculty(id);
+  const id = req.params.facultyId;
+  const result = await academicFacultyServices.getSingleAcademicFaculty(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
