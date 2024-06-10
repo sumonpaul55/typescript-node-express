@@ -5,4 +5,4 @@ const AcadmeicFacultySchema = new Schema<TAcademicFaculty>({
   name: { type: String, unique: true, required: [true, "Academic Faculty is Required"] },
 });
 
-export const AcademicFaculty = model<TAcademicFaculty>("academicFaculty", AcadmeicFacultySchema);
+export const AcademicFaculty = model<TAcademicFaculty>("AcademicFaculty", AcadmeicFacultySchema);

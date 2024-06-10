@@ -7,7 +7,7 @@ const createAcademicDepartmentDb = async (payLoad: TAcademicDepartment) => {
 };
 
 const getAcademicDepartmentDb = async () => {
-  const result = await AcademicDepartment.find();
+  const result = await AcademicDepartment.find().populate("academicFaculty");
   return result;
 };
 // get single academic department

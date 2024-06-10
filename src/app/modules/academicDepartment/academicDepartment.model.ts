@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { TAcademicDepartment } from "./academicDepartment.interface";
-import { NextFunction } from "express";
 
 const academiDepartmentSchema = new Schema<TAcademicDepartment>(
   {
@@ -17,6 +16,7 @@ const academiDepartmentSchema = new Schema<TAcademicDepartment>(
 );
 // check data is exist or not using pre middleware
 academiDepartmentSchema.pre("save", async function (next) {
+  //this next is from mongoose
   const isDepartmentExist = await AcademicDepartment.findOne({
     name: this.name,
   });
@@ -25,5 +25,13 @@ academiDepartmentSchema.pre("save", async function (next) {
   }
   next();
 });
-
+// prevent the execution if updated id does not exist in db
+academiDepartmentSchema.pre("findOneAndUpdate", async function (next) {
+  const query = this.getQuery();
+  const isDepartmentExist = await AcademicDepartment.findOne(query);
+  if (!isDepartmentExist) {
+    throw new Error("This department does not exist");
+  }
+  next();
+});
 export const AcademicDepartment = model<TAcademicDepartment>("AcademicDepartment", academiDepartmentSchema);
