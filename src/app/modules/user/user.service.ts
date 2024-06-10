@@ -1,3 +1,4 @@
+import { startSession } from "mongoose";
 import config from "../../config";
 import { TAcademicSemister } from "../academicSemister/academicSemisterInterFace";
 import { AcademicSemister } from "../academicSemister/academicSemisterModel";
@@ -6,6 +7,8 @@ import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const createStudentDb = async (password: string, payLoad: TStudent) => {
   // let define a user object
@@ -16,22 +19,38 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
   userData.role = "student";
   // find academic semister info
   const admissionSemisterData: any = await AcademicSemister.findById(payLoad.admissionSemister);
-  // set dynamic generated id
-  if (admissionSemisterData) {
+  // create a isolated environment
+  const session = await startSession();
+  // applying rollback for transaction consistancy
+  try {
+    session.startTransaction();
+    // set dynamic generated id
     userData.id = await generateStudentId(admissionSemisterData);
-    // create a user
-    const newUser = await User.create(userData);
+    // create a user ----------- (Transaction 1)
+    const newUser = await User.create([userData], { session }); //if we use isolated enviroment /// we must provide data as an array and session
     // create a student
-    if (Object.keys(newUser).length) {
-      // set id, _id as user
-      payLoad.id = newUser.id;
-      payLoad.user = newUser._id; // reference id
-
-      const newStudent = await Student.create(payLoad);
-      return newStudent;
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Faild to create user");
     }
+    // set id, _id as user
+    payLoad.id = newUser[0].id;
+    payLoad.user = newUser[0]._id; // reference id
+
+    // create 2nd transaction (create student)
+    const newStudent = await Student.create([payLoad], { session });
+    if (!newStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Faild to create Student");
+    }
+    // commit the sessiont affter successfull all transaction
+    await session.commitTransaction();
+    // end the session after commit
+    await session.endSession();
+    return newStudent;
+  } catch (error) {
+    // if error over session we should abort transaction and end session
+    await session.abortTransaction();
+    await session.endSession();
   }
-  throw new Error(`there is no academic Semister`);
 };
 
 export const userServices = {
