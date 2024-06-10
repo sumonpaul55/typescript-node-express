@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 import { academicSemisterNameCodeMapper } from "./academicSemister.constant";
 import { TAcademicSemister } from "./academicSemisterInterFace";
 import { AcademicSemister } from "./academicSemisterModel";
@@ -7,7 +9,7 @@ const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
 
   // check the semister name to code
   if (academicSemisterNameCodeMapper[payLoad.name] !== payLoad.code) {
-    throw new Error("Does not matching with semister name and code");
+    throw new AppError(httpStatus.NOT_FOUND, "Does not matching with semister name and code");
   }
   const result = await AcademicSemister.create(payLoad);
   return result;
@@ -29,7 +31,7 @@ const updateOneSemister = async (id: string, payLoad: Partial<TAcademicSemister>
   const updateDocs = payLoad;
 
   if (payLoad.name && payLoad.code && academicSemisterNameCodeMapper[payLoad.name] !== payLoad.code) {
-    throw new Error("Invalide semister code");
+    throw new AppError(httpStatus.NOT_FOUND, "Invalide semister code");
   }
   const updatedData = await AcademicSemister.findOneAndUpdate(filter, updateDocs, {
     new: true,
