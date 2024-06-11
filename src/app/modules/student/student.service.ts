@@ -30,8 +30,12 @@ const getSingleStudentFromDb = async (id: string) => {
 };
 // update student
 const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
+  // return error if data isn't exist
+  const isExistUpdatedId = await Student.findOne({ id });
+  if (!isExistUpdatedId) {
+    throw new AppError(httpStatus.NOT_FOUND, "This Student not found");
+  }
   const { name, guardian, localGuardian, ...remaingStudent } = payLoad;
-
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remaingStudent,
     // non primitive
