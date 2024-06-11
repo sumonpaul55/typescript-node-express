@@ -30,9 +30,31 @@ const getSingleStudentFromDb = async (id: string) => {
 };
 // update student
 const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
-  const result = await Student.findOneAndUpdate({ id }, payLoad, { new: true });
+  const { name, guardian, localGuardian, ...remaingStudent } = payLoad;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remaingStudent,
+    // non primitive
+  };
+  if (name && Object.keys(name).length) {
+    for (const [keys, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${keys}`] = value;
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for (const [keys, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${keys}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [keys, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${keys}`] = value;
+    }
+  }
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, { new: true });
   return result;
 };
+
 const deleteStudentDb = async (id: string) => {
   // transaction rollback for delete true from user and student collections
 
@@ -58,6 +80,7 @@ const deleteStudentDb = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to delete Student");
   }
 };
 
