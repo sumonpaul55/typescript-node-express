@@ -31,10 +31,12 @@ academiDepartmentSchema.pre("save", async function (next) {
 // prevent the execution if updated id does not exist in db
 academiDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const query = this.getQuery();
+
   const isDepartmentExist = await AcademicDepartment.findOne(query);
   if (!isDepartmentExist) {
     throw new AppError(httpStatus.NOT_FOUND, "This department does not exist");
   }
   next();
 });
+
 export const AcademicDepartment = model<TAcademicDepartment>("AcademicDepartment", academiDepartmentSchema);

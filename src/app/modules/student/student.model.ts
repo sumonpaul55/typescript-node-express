@@ -1,5 +1,7 @@
 import { Schema, model, connect } from "mongoose";
 import { TLocalGuardian, TStudent, TUserName, TGuardian, StudentModel } from "./student.interface";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 // import bcrypt from "bcrypt";
 // const bcrypt = require('bcrypt');
 
@@ -116,10 +118,10 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   academicDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
   isDeleted: { type: Boolean, default: false },
 });
-
 // studenSchema.methods.isUserExist = async function (id: string) {
 //   const existingUser = await Student.findOne({ id });
 //   return existingUser;
 // };
 // creating a model
+
 export const Student = model<TStudent>("Student", studenSchema);

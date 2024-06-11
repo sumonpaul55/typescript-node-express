@@ -3,6 +3,7 @@ import { Student } from "./student.model";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { User } from "../user/user.model";
+import { TStudent } from "./student.interface";
 
 const getAllStudentsFromDb = async () => {
   const result = await Student.find()
@@ -27,9 +28,19 @@ const getSingleStudentFromDb = async (id: string) => {
     });
   return result;
 };
-
+// update student
+const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
+  const result = await Student.findOneAndUpdate({ id }, payLoad, { new: true });
+  return result;
+};
 const deleteStudentDb = async (id: string) => {
   // transaction rollback for delete true from user and student collections
+
+  const isExistStudnet = await Student.findOne({ id });
+  if (!isExistStudnet) {
+    throw new AppError(httpStatus.NOT_FOUND, "Student Not found");
+  }
+
   const session = await startSession();
   try {
     session.startTransaction();
@@ -53,5 +64,6 @@ const deleteStudentDb = async (id: string) => {
 export const StudentServices = {
   getAllStudentsFromDb,
   getSingleStudentFromDb,
+  updateStudentIntoDb,
   deleteStudentDb,
 };

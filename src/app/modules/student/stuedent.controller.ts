@@ -25,9 +25,21 @@ const getOneStudent: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
-
+// update student
+const updateStudent = catchAsync(async (req, res) => {
+  const id = req.params.studentId;
+  const data = req.body;
+  const result = await StudentServices.updateStudentIntoDb(id, data);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student udpated Successfully",
+    data: result,
+  });
+});
 const deleteStudent = catchAsync(async (req, res) => {
   const result = await StudentServices.deleteStudentDb(req.params.id);
+  // console.log(result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -40,4 +52,5 @@ export const studenntController = {
   getAllStudent,
   getOneStudent,
   deleteStudent,
+  updateStudent,
 };

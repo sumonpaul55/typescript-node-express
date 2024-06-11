@@ -1,6 +1,5 @@
 import { startSession } from "mongoose";
 import config from "../../config";
-import { TAcademicSemister } from "../academicSemister/academicSemisterInterFace";
 import { AcademicSemister } from "../academicSemister/academicSemisterModel";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
@@ -37,7 +36,9 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
     payLoad.user = newUser[0]._id; // reference id
 
     // create 2nd transaction (create student)
+    // console.log(payLoad);
     const newStudent = await Student.create([payLoad], { session });
+
     if (!newStudent) {
       throw new AppError(httpStatus.BAD_REQUEST, "Faild to create Student");
     }
@@ -46,10 +47,11 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
     // end the session after commit
     await session.endSession();
     return newStudent;
-  } catch (error) {
+  } catch (err) {
     // if error over session we should abort transaction and end session
     await session.abortTransaction();
     await session.endSession();
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Email should be uniqe");
   }
 };
 
