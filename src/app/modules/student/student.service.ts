@@ -35,6 +35,7 @@ const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
   if (!isExistUpdatedId) {
     throw new AppError(httpStatus.NOT_FOUND, "This Student not found");
   }
+  //
   const { name, guardian, localGuardian, ...remaingStudent } = payLoad;
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remaingStudent,
@@ -55,7 +56,7 @@ const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
       modifiedUpdatedData[`localGuardian.${keys}`] = value;
     }
   }
-  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, { new: true });
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, { runValidators: true, new: true });
   return result;
 };
 
