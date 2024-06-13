@@ -3,12 +3,14 @@ import { ZodError, ZodIssue } from "zod";
 import { TErrorSources } from "../interface/error";
 import config from "../config";
 import handleZodError from "../errors/handleZodError";
+import handleValidationErro from "../errors/handleValidationError";
+import mongoose from "mongoose";
 // global error handler
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // setting default values
   let statusCode = 500;
   let message = "Something went wrong";
-
+  let validError: mongoose.Error.ValidationError;
   let errorSources: TErrorSources = [
     {
       path: "",
@@ -23,13 +25,15 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     message = simplifiedError.message;
     errorSources = simplifiedError?.errorSources;
   } else if (err?.name === "ValidationError") {
-    console.log(err?.errors);
+    const simplifiedError = handleValidationErro(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   }
-
   return res.status(statusCode).json({
     success: false,
     message,
-    err,
+    // err,
     errorSources,
     stack: config.NODE_ENV === "development" && err?.stack,
   });
