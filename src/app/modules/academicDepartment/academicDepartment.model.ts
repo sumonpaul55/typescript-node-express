@@ -17,16 +17,16 @@ const academiDepartmentSchema = new Schema<TAcademicDepartment>(
   }
 );
 // check data is exist or not using pre middleware
-academiDepartmentSchema.pre("save", async function (next) {
-  //this next is from mongoose
-  const isDepartmentExist = await AcademicDepartment.findOne({
-    name: this.name,
-  });
-  if (isDepartmentExist) {
-    throw new AppError(httpStatus.NOT_FOUND, "This Department si Already exist");
-  }
-  next();
-});
+// academiDepartmentSchema.pre("save", async function (next) {
+//   //this next is from mongoose
+//   const isDepartmentExist = await AcademicDepartment.findOne({
+//     name: this.name,
+//   });
+//   if (isDepartmentExist) {
+//     throw new AppError(httpStatus.NOT_FOUND, "This Department si Already exist");
+//   }
+//   next();
+// });
 
 // prevent the execution if updated id does not exist in db
 academiDepartmentSchema.pre("findOneAndUpdate", async function (next) {
