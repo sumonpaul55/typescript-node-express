@@ -7,6 +7,7 @@ import handleValidationErro from "../errors/handleValidationError";
 import mongoose from "mongoose";
 import handleCastError from "../errors/handleCastError";
 import handleDuplicateErrr from "../errors/handleDuplicateError";
+import AppError from "../errors/AppError";
 // global error handler
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // setting default values
@@ -40,6 +41,23 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
   }
   // return the ultimate error
   return res.status(statusCode).json({
