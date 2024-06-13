@@ -5,12 +5,12 @@ import config from "../config";
 import handleZodError from "../errors/handleZodError";
 import handleValidationErro from "../errors/handleValidationError";
 import mongoose from "mongoose";
+import handleCastError from "../errors/handleCastError";
 // global error handler
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // setting default values
   let statusCode = 500;
   let message = "Something went wrong";
-  let validError: mongoose.Error.ValidationError;
   let errorSources: TErrorSources = [
     {
       path: "",
@@ -29,12 +29,17 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
+  } else if (err?.name === "CastError") {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   }
   return res.status(statusCode).json({
     success: false,
     message,
-    // err,
     errorSources,
+    // err,
     stack: config.NODE_ENV === "development" && err?.stack,
   });
 };
