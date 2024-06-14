@@ -21,7 +21,6 @@ async function main() {
 main();
 
 // unhandled rejection process stop
-
 process.on("unhandledRejection", () => {
   if (server) {
     server.close(() => {
