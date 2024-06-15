@@ -7,12 +7,13 @@ import { TStudent } from "./student.interface";
 
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   const queryObj = { ...query }; //copy of main query objecct
+
   // {email: {$regex: query.searchTerm, $option: i }} method of search
   let searchTerm = "";
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-  const excludeFields = ["searchTerm", "sort", "limit", "page"];
+  const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
   excludeFields.forEach((el) => delete queryObj[el]);
   const searchQuery = Student.find({
     $or: ["name.firstName", "email", "presentAddress"].map((fields) => ({ [fields]: { $regex: searchTerm, $options: "i" } })),
@@ -30,7 +31,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   if (query.sort) {
     sort = query.sort as string;
   }
-  const sortQuery = filterQuery.sort();
+  const sortQuery = filterQuery.sort(sort);
 
   let limit = 1;
   if (query.limit) {
@@ -46,10 +47,21 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   }
   // paginate query
   const paginateQuery = sortQuery.skip(skip);
+  const limitQuery = paginateQuery.limit(limit);
+  // field limitnig (name, email)
+  let fields = "-__v"; // not selected // ommit
+  // fields :{name, email} // we should convert it like {name email}
+  if (query.fields) {
+    // fields = query.fields as string;
+    fields = (query.fields as string).split(",").join(" ");
+    console.log({ fields });
+  }
 
-  const limitQuery = await paginateQuery.limit(limit);
-  return limitQuery;
+  const fieldsQuery = await limitQuery.select(fields);
+
+  return fieldsQuery;
 };
+
 const getSingleStudentFromDb = async (id: string) => {
   const result = await Student.findOne({ id })
     .populate("admissionSemister")
