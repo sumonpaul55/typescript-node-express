@@ -79,7 +79,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStudentFromDb = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findById({ id })
     .populate("admissionSemister")
     .populate({
       path: "academicDepartment",
@@ -117,7 +117,7 @@ const updateStudentIntoDb = async (id: string, payLoad: Partial<TStudent>) => {
       modifiedUpdatedData[`localGuardian.${keys}`] = value;
     }
   }
-  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, { runValidators: true, new: true });
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, { runValidators: true, new: true });
   return result;
 };
 
@@ -133,10 +133,13 @@ const deleteStudentDb = async (id: string) => {
   try {
     session.startTransaction();
     const delededStudent = await Student.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+
     if (!delededStudent) {
       throw new AppError(httpStatus.EXPECTATION_FAILED, "Falied to delete student");
     }
-    const deleteUser = await User.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+
+    const deletedUserid = delededStudent.user;
+    const deleteUser = await User.findByIdAndUpdate(deletedUserid, { isDeleted: true }, { new: true, session });
     if (!deleteUser) {
       throw new AppError(httpStatus.EXPECTATION_FAILED, "Failed to delete user");
     }
