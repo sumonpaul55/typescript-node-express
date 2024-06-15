@@ -4,7 +4,6 @@ import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { User } from "../user/user.model";
 import { TStudent } from "./student.interface";
-import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
 
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   const queryObj = { ...query }; //copy of main query objecct
@@ -13,7 +12,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-  const excludeFields = ["searchTerm", "sort", "limit"];
+  const excludeFields = ["searchTerm", "sort", "limit", "page"];
   excludeFields.forEach((el) => delete queryObj[el]);
   const searchQuery = Student.find({
     $or: ["name.firstName", "email", "presentAddress"].map((fields) => ({ [fields]: { $regex: searchTerm, $options: "i" } })),
@@ -35,12 +34,22 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 
   let limit = 1;
   if (query.limit) {
-    limit = query.limit as number;
+    limit = Number(query.limit);
   }
-  const limitQuery = await sortQuery.limit(limit);
+
+  let page = 1;
+  let skip = 0;
+
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+  // paginate query
+  const paginateQuery = sortQuery.skip(skip);
+
+  const limitQuery = await paginateQuery.limit(limit);
   return limitQuery;
 };
-
 const getSingleStudentFromDb = async (id: string) => {
   const result = await Student.findOne({ id })
     .populate("admissionSemister")
