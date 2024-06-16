@@ -1,18 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import httpStatus from 'http-status';
-import mongoose from 'mongoose';
-import QueryBuilder from '../../builder/QueryBuilder';
-import AppError from '../../errors/AppError';
-import { User } from '../user/user.model';
-import { FacultySearchableFields } from './faculty.constant';
-import { TFaculty } from './faculty.interface';
-import { Faculty } from './faculty.model';
+import httpStatus from "http-status";
+import mongoose from "mongoose";
+import QueryBuilder from "../../builder/QueryBuilder";
+import AppError from "../../errors/AppError";
+import { User } from "../user/user.model";
+import { FacultySearchableFields } from "./faculty.constant";
+import { TFaculty } from "./faculty.interface";
+import { Faculty } from "./faculty.model";
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
-  const facultyQuery = new QueryBuilder(
-    Faculty.find().populate('academicDepartment'),
-    query,
-  )
+  const facultyQuery = new QueryBuilder(Faculty.find().populate("academicDepartment"), query)
     .search(FacultySearchableFields)
     .filter()
     .sort()
@@ -24,11 +21,12 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleFacultyFromDB = async (id: string) => {
-  const result = await Faculty.findById(id).populate('academicDepartment');
+  const result = await Faculty.findById(id).populate("academicDepartment");
 
   return result;
 };
 
+// update faculty
 const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
   const { name, ...remainingFacultyData } = payload;
 
@@ -55,27 +53,19 @@ const deleteFacultyFromDB = async (id: string) => {
   try {
     session.startTransaction();
 
-    const deletedFaculty = await Faculty.findByIdAndUpdate(
-      id,
-      { isDeleted: true },
-      { new: true, session },
-    );
+    const deletedFaculty = await Faculty.findByIdAndUpdate(id, { isDeleted: true }, { new: true, session });
 
     if (!deletedFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete faculty");
     }
 
     // get user _id from deletedFaculty
     const userId = deletedFaculty.user;
 
-    const deletedUser = await User.findByIdAndUpdate(
-      userId,
-      { isDeleted: true },
-      { new: true, session },
-    );
+    const deletedUser = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, session });
 
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
     }
 
     await session.commitTransaction();
