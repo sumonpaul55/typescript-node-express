@@ -4,7 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { courseServices } from "./course.service";
 
 const createCourse = catchAsync(async (req, res) => {
-  const result = await courseServices.getAllCourseFromDb();
+  const result = await courseServices.createCourseDb(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -13,7 +13,7 @@ const createCourse = catchAsync(async (req, res) => {
   });
 });
 const getAllcourese = catchAsync(async (req, res) => {
-  const result = await courseServices.getAllCourseFromDb();
+  const result = await courseServices.getAllCourseFromDb(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
