@@ -104,6 +104,20 @@ const assignFacultiesWithCourseIntoDb = async (id: string, payLoad: Partial<TCou
   return result;
 };
 
+// remove cours faculty
+const removeFacultiesWithCourseIntoDb = async (id: string, payLoad: Partial<TCourseFaculty>) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      course: id,
+      $pull: { faculties: { $in: payLoad } },
+    },
+    {
+      new: true,
+    }
+  );
+  return result;
+};
 export const courseServices = {
   createCourseDb,
   getAllCourseFromDb,
@@ -111,4 +125,5 @@ export const courseServices = {
   deleteCourseIntoDb,
   updateCourseIntoDb,
   assignFacultiesWithCourseIntoDb,
+  removeFacultiesWithCourseIntoDb,
 };

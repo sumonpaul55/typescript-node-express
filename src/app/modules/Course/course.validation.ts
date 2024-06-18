@@ -32,7 +32,7 @@ const updateCourseValidationSchema = z.object({
 });
 
 // faculties validation
-const assingFacultiesWithCourseValidationSchema = z.object({
+const FacultiesWithCourseValidationSchema = z.object({
   boyd: z.object({
     faculties: z.array(z.string()),
   }),
@@ -41,5 +41,5 @@ const assingFacultiesWithCourseValidationSchema = z.object({
 export const courseValidations = {
   createCourseValidationSchema,
   updateCourseValidationSchema,
-  assingFacultiesWithCourseValidationSchema,
+  FacultiesWithCourseValidationSchema,
 };
