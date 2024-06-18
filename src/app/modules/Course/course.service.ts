@@ -2,8 +2,8 @@ import httpStatus from "http-status";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
 import { courseSearchableFields } from "./constant";
-import { TCourse } from "./course.interface";
-import { Course } from "./course.model";
+import { TCourse, TCourseFaculty } from "./course.interface";
+import { Course, CourseFaculty } from "./course.model";
 import mongoose from "mongoose";
 
 const createCourseDb = async (payLoad: TCourse) => {
@@ -85,6 +85,21 @@ const updateCourseIntoDb = async (id: string, payLoad: Partial<TCourse>) => {
 // delete course
 const deleteCourseIntoDb = async (id: string) => {
   const result = await Course.findByIdAndUpdate(id, { isDeleted: true, new: true });
+  return result;
+};
+
+// assign cours faculty
+const assignFacultiesWithCourseIntoDb = async (id: string, payLoad: Partial<TCourseFaculty>) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: { faculties: { $each: payLoad } },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
   return result;
 };
 
