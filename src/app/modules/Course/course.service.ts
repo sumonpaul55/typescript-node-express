@@ -93,6 +93,7 @@ const assignFacultiesWithCourseIntoDb = async (id: string, payLoad: Partial<TCou
   const result = await CourseFaculty.findByIdAndUpdate(
     id,
     {
+      course: id,
       $addToSet: { faculties: { $each: payLoad } },
     },
     {
@@ -109,4 +110,5 @@ export const courseServices = {
   getSingleCourseFromDb,
   deleteCourseIntoDb,
   updateCourseIntoDb,
+  assignFacultiesWithCourseIntoDb,
 };
