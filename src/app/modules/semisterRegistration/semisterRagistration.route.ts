@@ -13,3 +13,5 @@ router.post(
 router.get("/", semisterRagistrationController.getSemisterRagistration);
 router.get("/:id", semisterRagistrationController.getSingleSemisterRegistration);
 router.patch("/:id", semisterRagistrationController.updateSemisterRagistration);
+
+export const semisterRegistrationRoutes = router;
