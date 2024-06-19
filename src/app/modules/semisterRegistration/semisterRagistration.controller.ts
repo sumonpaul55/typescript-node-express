@@ -4,8 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { semisterRagistrationService } from "./semisterRagistration.service";
 
 const createSemisterRegistration = catchAsync(async (req, res) => {
-  const data = req.body;
-  const result = await semisterRagistrationService.createSemisterRagisTrationIntoDb(data);
+  const result = await semisterRagistrationService.createSemisterRagisTrationIntoDb(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

@@ -1,9 +1,10 @@
-import { Router } from "express";
+import express from "express";
+
 import validateRequest from "../../middleWare/ValidateRequest";
 import { semisterRegistrationValidationSchema } from "./semistarRagistration.validation";
 import { semisterRagistrationController } from "./semisterRagistration.controller";
 
-const router = Router();
+const router = express.Router();
 router.post(
   "create-semister-registration",
   validateRequest(semisterRegistrationValidationSchema.createSemisteRegistrationValidationSchema),
