@@ -6,13 +6,17 @@ import { semisterRagistrationController } from "./semisterRagistration.controlle
 
 const router = express.Router();
 router.post(
-  "create-semister-registration",
+  "/create-semister-registration",
   validateRequest(semisterRegistrationValidationSchema.createSemisteRegistrationValidationSchema),
   semisterRagistrationController.createSemisterRegistration
 );
 
 router.get("/", semisterRagistrationController.getSemisterRagistration);
 router.get("/:id", semisterRagistrationController.getSingleSemisterRegistration);
-router.patch("/:id", semisterRagistrationController.updateSemisterRagistration);
+router.patch(
+  "/:id",
+  validateRequest(semisterRegistrationValidationSchema.updateSemisteRegistrationValidationSchema),
+  semisterRagistrationController.updateSemisterRagistration
+);
 
 export const semisterRegistrationRoutes = router;

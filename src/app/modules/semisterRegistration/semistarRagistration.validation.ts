@@ -12,6 +12,17 @@ const createSemisteRegistrationValidationSchema = z.object({
   }),
 });
 
+const updateSemisteRegistrationValidationSchema = z.object({
+  body: z.object({
+    academicSemister: z.string().optional(),
+    status: z.enum([...semisterRegistrationStatus] as [string, ...[]]).optional(),
+    startDate: z.string().datetime().optional(),
+    endDate: z.string().datetime().optional(),
+    minCreadit: z.number().optional(),
+    maxCreadit: z.number().optional(),
+  }),
+});
 export const semisterRegistrationValidationSchema = {
   createSemisteRegistrationValidationSchema,
+  updateSemisteRegistrationValidationSchema,
 };
