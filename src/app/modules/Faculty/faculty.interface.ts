@@ -1,20 +1,13 @@
-import { Model, Types } from 'mongoose';
+import { Model, Types } from "mongoose";
 
-export type TGender = 'male' | 'female' | 'other';
-export type TBloodGroup =
-  | 'A+'
-  | 'A-'
-  | 'B+'
-  | 'B-'
-  | 'AB+'
-  | 'AB-'
-  | 'O+'
-  | 'O-';
+export type TGender = "male" | "female" | "other";
+export type TBloodGroup = "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
 
 export type TUserName = {
   firstName: string;
   middleName: string;
   lastName: string;
+  _id: boolean;
 };
 
 export type TFaculty = {
@@ -27,7 +20,7 @@ export type TFaculty = {
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloogGroup?: TBloodGroup;
+  bloodGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
   profileImg?: string;
