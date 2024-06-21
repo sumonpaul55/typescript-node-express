@@ -4,6 +4,7 @@ import { AcademicSemister } from "../academicSemister/academicSemisterModel";
 import { TSemisterRagistration } from "./semisterRagistration.interface";
 import { SemisterRegistration } from "./semisterRagistration.model";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { SemisterRegistrationStatusConst } from "./semisterRegistration.constatnt";
 
 const createSemisterRagisTrationIntoDb = async (payLoad: TSemisterRagistration) => {
   // check if there any registered semiester that is alredy "UPCOMING" | "ONGOING"
@@ -48,13 +49,24 @@ const updateSemisterRegistrationDb = async (id: string, payLoad: TSemisterRagist
   const currentSemisterStatus = isSemisterRegistrationExist?.status;
   const requestedStatus = payLoad?.status;
   // if the requested Semister registration is ended we will not update
-  if (currentSemisterStatus === "ENDED") {
+  if (currentSemisterStatus === SemisterRegistrationStatusConst.ENDED) {
     throw new AppError(httpStatus.BAD_REQUEST, `This semister is already ${currentSemisterStatus}`);
   }
   // finally update the semister "UPCOMIG" -> "ONGING" -> "ENDED"
-  if (currentSemisterStatus === "UPCOMING" && requestedStatus === "ENDED") {
+  if (currentSemisterStatus === SemisterRegistrationStatusConst.UPCOMING && requestedStatus === SemisterRegistrationStatusConst.ENDED) {
     throw new AppError(httpStatus.BAD_REQUEST, `You cannot directly change status from ${currentSemisterStatus} to ${requestedStatus}`);
   }
+  if (currentSemisterStatus === SemisterRegistrationStatusConst.ONGOING && requestedStatus === SemisterRegistrationStatusConst.UPCOMING) {
+    throw new AppError(httpStatus.BAD_REQUEST, `You cannot change status from ${currentSemisterStatus} to ${requestedStatus}`);
+  }
+  if (currentSemisterStatus === SemisterRegistrationStatusConst.ONGOING && requestedStatus === SemisterRegistrationStatusConst.UPCOMING) {
+    throw new AppError(httpStatus.BAD_REQUEST, `You cannot change status from ${currentSemisterStatus} to ${requestedStatus}`);
+  }
+  const result = await SemisterRegistration.findByIdAndUpdate(id, payLoad, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
 };
 
 export const semisterRagistrationService = {
