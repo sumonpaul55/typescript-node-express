@@ -33,26 +33,30 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     throw new AppError(httpStatus.NOT_FOUND, "Semester registration not found !");
   }
 
+  // check academic Semister
   const academicSemester = isSemesterRegistrationExits.academicSemister;
-
+  // check isAcademicfacultyExist
   const isAcademicFacultyExits = await AcademicFaculty.findById(academicFaculty);
 
   if (!isAcademicFacultyExits) {
     throw new AppError(httpStatus.NOT_FOUND, "Academic Faculty not found !");
   }
 
+  // check academic Department exist
   const isAcademicDepartmentExits = await AcademicDepartment.findById(academicDepartment);
 
   if (!isAcademicDepartmentExits) {
     throw new AppError(httpStatus.NOT_FOUND, "Academic Department not found !");
   }
 
+  // check check if course exist
   const isCourseExits = await Course.findById(course);
 
   if (!isCourseExits) {
     throw new AppError(httpStatus.NOT_FOUND, "Course not found !");
   }
 
+  // check is faculty exist
   const isFacultyExits = await Faculty.findById(faculty);
 
   if (!isFacultyExits) {
