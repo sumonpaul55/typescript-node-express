@@ -64,6 +64,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   }
 
   // check if the department is belong to the  faculty
+
   const isDepartmentBelongToFaculty = await AcademicDepartment.findOne({
     _id: academicDepartment,
     academicFaculty,
