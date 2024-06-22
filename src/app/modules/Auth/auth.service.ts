@@ -41,6 +41,12 @@ const loginUserDb = async (payLoad: TLoginUser) => {
   // Access Granted: Send AccessToken, Refresh Token
 };
 
+// change password service
+const changePasswordDb = async (user: { userId: string; role: string }, payLoad) => {
+  const result = await User.findOneAndUpdate({ id: user?.userId, role: user.role }, payLoad, { new: true, runValidators: true });
+};
+
 export const authService = {
   loginUserDb,
+  changePasswordDb,
 };
