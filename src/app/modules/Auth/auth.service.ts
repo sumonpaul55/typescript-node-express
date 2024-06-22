@@ -28,7 +28,7 @@ const loginUserDb = async (payLoad: TLoginUser) => {
   }
   // create token and send to the server
   const jwtPayLoad = {
-    id: isExistUser?.id,
+    userId: isExistUser?.id,
     role: isExistUser?.role,
   };
   const accessToken = jwt.sign(jwtPayLoad, config.jwt_access_secret as string, {
