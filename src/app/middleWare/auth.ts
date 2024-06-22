@@ -9,7 +9,7 @@ interface CustomRequest extends Request {
   user: JwtPayload;
 }
 const auth = () => {
-  return catchAsync(async (req: CustomRequest, res, next) => {
+  return catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     // validation
     const token = req.headers.authorization;
     // check token is sent from the client
