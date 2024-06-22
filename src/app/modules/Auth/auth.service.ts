@@ -1,8 +1,9 @@
-import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { TLoginUser } from "./auth.interface";
 import { User } from "../user/user.model";
+import jwt from "jsonwebtoken";
+import config from "../../config";
 
 const loginUserDb = async (payLoad: TLoginUser) => {
   // check if the user is exist
@@ -11,7 +12,7 @@ const loginUserDb = async (payLoad: TLoginUser) => {
     throw new AppError(httpStatus.NOT_FOUND, `User not Exist with ID: ${payLoad.id}`);
   }
   // checking if the user is already deleted
-  const isDeletedUser = (await User.isUserExistByCustomId(payLoad?.id)).isDeleted;
+  const isDeletedUser = isExistUser.isDeleted;
   if (isDeletedUser) {
     throw new AppError(httpStatus.FORBIDDEN, `User is Delete`);
   }
@@ -22,12 +23,23 @@ const loginUserDb = async (payLoad: TLoginUser) => {
   }
   // check password is correct using bcrypt
   const matched = await User.isPasswordMatched(payLoad?.password, isExistUser?.password);
-  console.log(matched);
   if (!matched) {
     throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
   }
+  // create token and send to the server
+  const jwtPayLoad = {
+    id: isExistUser?.id,
+    role: isExistUser?.role,
+  };
+  const accessToken = jwt.sign(jwtPayLoad, config.jwt_access_secret as string, {
+    expiresIn: "10d",
+  });
+  return {
+    accessToken,
+    needsPasswordChange: isExistUser?.needsPasswordChange,
+  };
+  // Access Granted: Send AccessToken, Refresh Token
 };
-// Access Granted: Send AccessToken, Refresh Token
 
 export const authService = {
   loginUserDb,
