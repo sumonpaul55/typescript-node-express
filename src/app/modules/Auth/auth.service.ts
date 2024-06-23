@@ -70,6 +70,7 @@ const changePasswordDb = async (userData: JwtPayload, payLoad: { oldPassword: st
     { id: userData.userId, role: userData.role },
     {
       password: newHashedPassword,
+      passwordChangedAt: new Date(),
     },
     { new: true, runValidators: true }
   );

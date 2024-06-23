@@ -159,7 +159,11 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     throw new Error(err);
   }
 };
-
+// get all users
+// const getAlluserFromDb = async () => {
+//   const result = await User.find({});
+//   return result;
+// };
 export const userServices = {
   createStudentDb,
   createAdminIntoDB,

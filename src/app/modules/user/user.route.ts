@@ -8,6 +8,7 @@ import auth from "../../middleWare/auth";
 import { USER_ROLE } from "./user.constant";
 
 const router = express.Router();
+// router.get("/", userControllers.getAllUsers);
 
 router.post(
   "/create-student",

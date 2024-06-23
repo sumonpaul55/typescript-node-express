@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NextFunction, Request, RequestHandler, response, Response } from "express";
 import { userServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
@@ -48,7 +48,17 @@ const createAdmin = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
+// get all users
+// const getAllUsers = catchAsync(async (req, res) => {
+//   const result = await userServices.getAlluserFromDb;
+//   console.log(result);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "All Users retrive successfull",
+//     data: result,
+//   });
+// });
 export const userControllers = {
   createStudent,
   createFaculty,
