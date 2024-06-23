@@ -78,8 +78,41 @@ const changePasswordDb = async (userData: JwtPayload, payLoad: { oldPassword: st
   );
   return null;
 };
+// generate refresh token
+const refreshToken = async (refreshToken: string) => {
+  // verify token is valid
+  var decoded = jwt.verify(refreshToken, config.JWT_REFRESH_SECRET as string) as JwtPayload;
 
+  const { userId, role, iat } = decoded;
+  // check if the user is exist
+  const isExistUser = await User.isUserExistByCustomId(userId);
+  if (!isExistUser) {
+    throw new AppError(httpStatus.NOT_FOUND, `User not Exist with ID: ${userId}`);
+  }
+  // checking if the user is already deleted
+  const isDeletedUser = isExistUser.isDeleted;
+  if (isDeletedUser) {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Delete`);
+  }
+  // checking if the user is already blocked
+  const usersStatus = isExistUser?.status;
+  if (usersStatus === "blocked") {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Blocked`);
+  }
+  // check the token and desabled after change password
+  if (isExistUser.passwordChangedAt && User.isJWTissuedBeforPasswordChanged(isExistUser.passwordChangedAt, iat as number)) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Your are not authorized");
+  }
+  // create new access token using rfresh token token and send to the server
+  const jwtPayLoad = {
+    userId: isExistUser?.id,
+    role: isExistUser?.role,
+  };
+  const accessToken = createToken(jwtPayLoad, config.jwt_access_secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
+  return accessToken;
+};
 export const authService = {
   loginUserDb,
   changePasswordDb,
+  refreshToken,
 };
