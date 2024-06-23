@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { TLoginUser } from "./auth.interface";
 import { User } from "../user/user.model";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 
 const loginUserDb = async (payLoad: TLoginUser) => {
@@ -42,8 +43,37 @@ const loginUserDb = async (payLoad: TLoginUser) => {
 };
 
 // change password service
-const changePasswordDb = async (user: { userId: string; role: string }, payLoad) => {
-  const result = await User.findOneAndUpdate({ id: user?.userId, role: user.role }, payLoad, { new: true, runValidators: true });
+const changePasswordDb = async (userData: JwtPayload, payLoad: { oldPassword: string; newPassword: string }) => {
+  // check if the user is exist
+  const isExistUser = await User.isUserExistByCustomId(userData?.userId);
+  if (!isExistUser) {
+    throw new AppError(httpStatus.NOT_FOUND, `User not Exist with ID: ${userData.userId}`);
+  }
+  // checking if the user is already deleted
+  const isDeletedUser = isExistUser.isDeleted;
+  if (isDeletedUser) {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Delete`);
+  }
+  // checking if the user is already blocked
+  const usersStatus = isExistUser?.status;
+  if (usersStatus === "blocked") {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Blocked`);
+  }
+  // check password is correct using bcrypt
+  const matched = await User.isPasswordMatched(payLoad.oldPassword, isExistUser?.password);
+  if (!matched) {
+    throw new AppError(httpStatus.FORBIDDEN, "Old Password does not matched");
+  }
+  // hash new password
+  const newHashedPassword = await bcrypt.hash(payLoad.newPassword, Number(config.BCRYPT_SALTROUND));
+  const result = await User.findOneAndUpdate(
+    { id: userData.userId, role: userData.role },
+    {
+      password: newHashedPassword,
+    },
+    { new: true, runValidators: true }
+  );
+  return null;
 };
 
 export const authService = {
