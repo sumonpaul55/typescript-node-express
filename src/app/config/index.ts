@@ -10,4 +10,7 @@ export default {
   BCRYPT_SALTROUND: process.env.BCRYPT_SALTROUND,
   default_password: process.env.DEFAULT_PASSWORD,
   jwt_access_secret: process.env.JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+  JWT_ACCESS_EXPIRE_IN: process.env.JWT_ACCESS_EXPIRE_IN,
+  JWT_REFRESH_EXPIRE_IN: process.env.JWT_REFRESH_EXPIRE_IN,
 };

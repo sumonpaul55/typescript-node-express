@@ -5,6 +5,7 @@ import { TLoginUser } from "./auth.interface";
 import { User } from "../user/user.model";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
+import { createToken } from "./auth.utils";
 
 const loginUserDb = async (payLoad: TLoginUser) => {
   // check if the user is exist
@@ -32,11 +33,12 @@ const loginUserDb = async (payLoad: TLoginUser) => {
     userId: isExistUser?.id,
     role: isExistUser?.role,
   };
-  const accessToken = jwt.sign(jwtPayLoad, config.jwt_access_secret as string, {
-    expiresIn: "10d",
-  });
+  const accessToken = createToken(jwtPayLoad, config.jwt_access_secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
+  const refreshToken = createToken(jwtPayLoad, config.JWT_REFRESH_SECRET as string, config.JWT_REFRESH_EXPIRE_IN as string);
+
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: isExistUser?.needsPasswordChange,
   };
   // Access Granted: Send AccessToken, Refresh Token
