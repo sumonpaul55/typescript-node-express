@@ -8,6 +8,7 @@ import { USER_ROLE } from "../user/user.constant";
 const router = Router();
 
 router.post("/login", validateRequest(authValidation.loginValidationSchema), authController.loginUser);
+
 router.post(
   "/change-password",
   auth(USER_ROLE.admin, USER_ROLE.student, USER_ROLE.faculty),
