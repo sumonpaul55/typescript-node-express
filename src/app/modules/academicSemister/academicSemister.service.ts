@@ -17,6 +17,7 @@ const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
 };
 
 const getAcademicSemisterDB = async (payload: JwtPayload) => {
+  console.log(payload);
   if (payload) {
     return await AcademicSemister.find(payload);
   }
