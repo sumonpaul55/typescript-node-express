@@ -3,6 +3,7 @@ import AppError from "../../errors/AppError";
 import { academicSemisterNameCodeMapper } from "./academicSemister.constant";
 import { TAcademicSemister } from "./academicSemisterInterFace";
 import { AcademicSemister } from "./academicSemisterModel";
+import { JwtPayload } from "jsonwebtoken";
 
 const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
   // semister name ------> semister ocde
@@ -15,7 +16,10 @@ const createAcademicSemisterDb = async (payLoad: TAcademicSemister) => {
   return result;
 };
 
-const getAcademicSemisterDB = async () => {
+const getAcademicSemisterDB = async (payload: JwtPayload) => {
+  if (payload) {
+    return await AcademicSemister.find(payload);
+  }
   return await AcademicSemister.find();
 };
 

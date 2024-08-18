@@ -36,7 +36,7 @@ const refreshTokenGenerateAccessToken = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "access Token is retrived successfully",
-    data: result,
+    data: { accessToken: result },
   });
 });
 

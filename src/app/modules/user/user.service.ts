@@ -42,7 +42,6 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
     payLoad.user = newUser[0]._id; // reference id
 
     // create 2nd transaction (create student)
-    // console.log(payLoad);
     const newStudent = await Student.create([payLoad], { session });
 
     if (!newStudent) {

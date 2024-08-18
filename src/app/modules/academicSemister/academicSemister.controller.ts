@@ -15,7 +15,8 @@ const createAcademicSemister = catchAsync(async (req, res) => {
 });
 
 const getAcademicSemister = catchAsync(async (req, res) => {
-  const result = await AcademicSemisterService.getAcademicSemisterDB();
+  const query = req.query;
+  const result = await AcademicSemisterService.getAcademicSemisterDB(query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

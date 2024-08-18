@@ -1,4 +1,3 @@
-import { NextFunction } from "express";
 import { academicSemisterCode, academicSemisterName, Months } from "./academicSemister.constant";
 import { TAcademicSemister } from "./academicSemisterInterFace";
 import { model, Schema } from "mongoose";
