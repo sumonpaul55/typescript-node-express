@@ -4,8 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { academicFacultyServices } from "./academicFaculty.service";
 
 const createAcademicFaculty = catchAsync(async (req, res) => {
-  const data = req.body;
-  const result = await academicFacultyServices.createAcademicFacultyDb(data);
+  const result = await academicFacultyServices.createAcademicFacultyDb(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

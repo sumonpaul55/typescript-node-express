@@ -6,11 +6,12 @@ import { academicDepartmentValidations } from "./academicDepartment.validation";
 const router = Router();
 
 router.post(
-  "/create-academic-department",
-  // validateRequest(academicDepartmentValidations.createAcademicDepartmentValidationSchema),
+  "/create-department",
+  validateRequest(academicDepartmentValidations.createAcademicDepartmentValidationSchema),
   academicDepartmentControllers.createAcademicDepartment
 );
 router.get("/", academicDepartmentControllers.getAcademicDepartment);
+
 router.get("/:id", academicDepartmentControllers.getSingleAcademicDepartment);
 router.patch(
   "/:id",
