@@ -14,6 +14,7 @@ import { TFaculty } from "../Faculty/faculty.interface";
 import { TAdmin } from "../Admin/admin.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { Faculty } from "../Faculty/faculty.model";
+import { sendImageToCloudinary } from "../../utils/sendImagetoCloudinary";
 
 const createStudentDb = async (file: any, password: string, payLoad: TStudent) => {
   // let define a user object
@@ -40,21 +41,24 @@ const createStudentDb = async (file: any, password: string, payLoad: TStudent) =
     const imageName = `${userData.id}${payLoad?.name?.firstName}`;
     const path = file?.path;
     // send image to cloudinary
-    // const {secure_url} = await
+    const { secure_url }: any = await sendImageToCloudinary(imageName, path);
+
     // create a user ----------- (Transaction 1)
     const newUser = await User.create([userData], { session }); //if we use isolated enviroment /// we must provide data as an array and session
     // create a student
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Faild to create user");
     }
-    // set id, _id as user
+
+    // set id, _id as user ,profile image
     payLoad.id = newUser[0].id;
     payLoad.user = newUser[0]._id; // reference id
+    payLoad.profileImage = secure_url;
 
     // create 2nd transaction (create student)
     const newStudent = await Student.create([payLoad], { session });
 
-    if (!newStudent) {
+    if (!newStudent.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Faild to create Student");
     }
     // commit the sessiont affter successfull all transaction
