@@ -15,15 +15,20 @@ import { TAdmin } from "../Admin/admin.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { Faculty } from "../Faculty/faculty.model";
 
-const createStudentDb = async (password: string, payLoad: TStudent) => {
+const createStudentDb = async (file: any, password: string, payLoad: TStudent) => {
   // let define a user object
   const userData: Partial<TUser> = {};
   // set password in user object
   userData.password = password || (config.default_password as string);
   // set the role
   userData.role = "student";
+  // set student email
+  userData.email = payLoad.email;
   // find academic semister info
-  const admissionSemisterData: any = await AcademicSemister.findById(payLoad.admissionSemister);
+  const admissionSemisterData = await AcademicSemister.findById(payLoad.admissionSemister);
+  if (!admissionSemisterData) {
+    throw new AppError(400, "Admission semister not found");
+  }
   // create a isolated environment
   const session = await startSession();
   // applying rollback for transaction consistancy
@@ -31,6 +36,11 @@ const createStudentDb = async (password: string, payLoad: TStudent) => {
     session.startTransaction();
     // set dynamic generated id
     userData.id = await generateStudentId(admissionSemisterData);
+
+    const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+    const path = file?.path;
+    // send image to cloudinary
+    // const {secure_url} = await
     // create a user ----------- (Transaction 1)
     const newUser = await User.create([userData], { session }); //if we use isolated enviroment /// we must provide data as an array and session
     // create a student

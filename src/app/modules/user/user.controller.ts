@@ -4,25 +4,22 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 
-const createStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const { password, studentData } = req.body;
-    const result = await userServices.createStudentDb(password, studentData);
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Student added Successfully",
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Student created successfully",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const createStudent = catchAsync(async (req, res) => {
+  const { password, studentData } = req.body;
+
+  const result = await userServices.createStudentDb(req.file, password, studentData);
+  // res.status(200).json({
+  //   success: true,
+  //   message: "Student added Successfully",
+  //   data: result,
+  // });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student created successfully",
+    data: result,
+  });
+});
 
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
