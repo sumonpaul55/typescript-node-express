@@ -43,7 +43,6 @@ const loginUserDb = async (payLoad: TLoginUser) => {
   };
   // Access Granted: Send AccessToken, Refresh Token
 };
-
 // change password service
 const changePasswordDb = async (userData: JwtPayload, payLoad: { oldPassword: string; newPassword: string }) => {
   // check if the user is exist
@@ -111,8 +110,39 @@ const refreshToken = async (refreshToken: string) => {
   const accessToken = createToken(jwtPayLoad, config.jwt_access_secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
   return accessToken;
 };
+const forgetPasswordDb = async (userId: { id: string }) => {
+  const isExistUser = await User.isUserExistByCustomId(userId.id);
+  // const isExistUser = await User.findOne(userId);
+
+  if (!isExistUser) {
+    throw new AppError(httpStatus.NOT_FOUND, `User not Exist with ID: ${userId}`);
+  }
+
+  // checking if the user is already deleted
+  const isDeletedUser = isExistUser.isDeleted;
+
+  if (isDeletedUser) {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Delete`);
+  }
+  // checking if the user is already blocked
+  const usersStatus = isExistUser?.status;
+  if (usersStatus === "blocked") {
+    throw new AppError(httpStatus.FORBIDDEN, `User is Blocked`);
+  }
+  // create new access token for reset password
+  const jwtPayLoad = {
+    userId: isExistUser?.id,
+    role: isExistUser?.role,
+  };
+  const accessToken = createToken(jwtPayLoad, config.jwt_access_secret as string, "10m");
+
+  const resetUiLink = `http://localhost:3000?id=${isExistUser?.id}&token=${accessToken}`;
+
+  return resetUiLink;
+};
 export const authService = {
   loginUserDb,
   changePasswordDb,
   refreshToken,
+  forgetPasswordDb,
 };
