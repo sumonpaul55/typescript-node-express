@@ -10,11 +10,13 @@ import { createToken } from "./auth.utils";
 const loginUserDb = async (payLoad: TLoginUser) => {
   // check if the user is exist
   const isExistUser = await User.isUserExistByCustomId(payLoad?.id);
+
   if (!isExistUser) {
     throw new AppError(httpStatus.NOT_FOUND, `User not Exist with ID: ${payLoad.id}`);
   }
   // checking if the user is already deleted
   const isDeletedUser = isExistUser.isDeleted;
+
   if (isDeletedUser) {
     throw new AppError(httpStatus.FORBIDDEN, `User is Delete`);
   }

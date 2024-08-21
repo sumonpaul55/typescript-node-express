@@ -53,8 +53,8 @@ userSchema.post("save", function (doc, next) {
 });
 
 userSchema.statics.isUserExistByCustomId = async function (id: string) {
-  // return await User.findOne({ where: { id: id } }).select("+password"); // as it is select: 0, in model// without + return only password
-  return await User.findOne({ id: id }); // as it is select: 0, in model// without + return only password
+  return await User.findOne({ id: id }).select("+password"); // as it is select: 0, in model// without + return only password
+  // return await User.findOne({ id: id }); // as it is select: 0, in model// without + return only password
 };
 // check password is matched
 userSchema.statics.isPasswordMatched = async function (plainTextPassword: string, hashPassword: string) {
