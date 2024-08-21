@@ -118,10 +118,30 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   academicDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
   isDeleted: { type: Boolean, default: false },
 });
-// studenSchema.methods.isUserExist = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
+// vertual
+studenSchema.virtual("fullName").get(function () {
+  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
+});
+// Query middleware
+studenSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studenSchema.pre("findOne", function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
+  next();
+});
+
+studenSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+studenSchema.statics.isUserExistByCustomId = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
 // creating a model
 
 export const Student = model<TStudent>("Student", studenSchema);
