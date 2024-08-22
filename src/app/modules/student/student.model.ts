@@ -117,10 +117,10 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   admissionSemister: { type: Schema.Types.ObjectId, ref: "AcademicSemister" },
   academicDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
   isDeleted: { type: Boolean, default: false },
-});
+}).set("toJSON", { virtuals: true });
 // vertual
 studenSchema.virtual("fullName").get(function () {
-  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
+  return `${this?.name?.firstName || ""} ${this?.name?.middleName || ""} ${this?.name?.lastName || ""}`.trim();
 });
 // Query middleware
 studenSchema.pre("find", function (next) {
