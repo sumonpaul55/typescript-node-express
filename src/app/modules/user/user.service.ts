@@ -17,6 +17,7 @@ import { Faculty } from "../Faculty/faculty.model";
 import { sendImageToCloudinary } from "../../utils/sendImagetoCloudinary";
 
 const createStudentDb = async (file: any, password: string, payLoad: TStudent) => {
+  // console.log(payLoad);
   // let define a user object
   const userData: Partial<TUser> = {};
   // set password in user object
@@ -26,7 +27,9 @@ const createStudentDb = async (file: any, password: string, payLoad: TStudent) =
   // set student email
   userData.email = payLoad.email;
   // find academic semister info
+
   const admissionSemisterData = await AcademicSemister.findById(payLoad.admissionSemister);
+
   if (!admissionSemisterData) {
     throw new AppError(400, "Admission semister not found");
   }
@@ -37,14 +40,9 @@ const createStudentDb = async (file: any, password: string, payLoad: TStudent) =
     session.startTransaction();
     // set dynamic generated id
     userData.id = await generateStudentId(admissionSemisterData);
-
-    const imageName = `${userData.id}${payLoad?.name?.firstName}`;
-    const path = String(file?.path);
-    // send image to cloudinary
-    const { secure_url }: any = await sendImageToCloudinary(imageName, path);
-
     // create a user ----------- (Transaction 1)
     const newUser = await User.create([userData], { session }); //if we use isolated enviroment /// we must provide data as an array and session
+
     // create a student
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Faild to create user");
@@ -53,7 +51,14 @@ const createStudentDb = async (file: any, password: string, payLoad: TStudent) =
     // set id, _id as user ,profile image
     payLoad.id = newUser[0].id;
     payLoad.user = newUser[0]._id; // reference id
-    payLoad.profileImage = secure_url;
+
+    if (file) {
+      const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+      const path = String(file?.path);
+      // send image to cloudinary
+      const { secure_url }: any = await sendImageToCloudinary(imageName, path);
+      payLoad.profileImage = secure_url;
+    }
 
     // create 2nd transaction (create student)
     const newStudent = await Student.create([payLoad], { session });
@@ -66,11 +71,12 @@ const createStudentDb = async (file: any, password: string, payLoad: TStudent) =
     // end the session after commit
     await session.endSession();
     return newStudent;
-  } catch (err) {
+  } catch (err: any) {
     // if error over session we should abort transaction and end session
+
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Email should be uniqe");
+    throw new Error(err);
   }
 };
 

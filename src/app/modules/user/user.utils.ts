@@ -13,7 +13,6 @@ const findLastStudentId = async () => {
 
   return lastStudent?.id ? lastStudent.id : undefined;
 };
-
 //  generate studennt id //year, semister code and 4 digit number
 export const generateStudentId = async (payLoad: TAcademicSemister) => {
   // current number

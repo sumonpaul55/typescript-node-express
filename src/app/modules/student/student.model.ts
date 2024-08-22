@@ -13,12 +13,9 @@ const userNameSchema = new Schema<TUserName>({
     required: [true, "first name is required"],
     maxlength: [20, "first name can not be more than 20 character"],
     trim: true,
-    validate: {
-      validator: function (firstName: string) {
-        const firstNamevalue = firstName.charAt(0).toUpperCase() + firstName.slice(1);
-        return firstName === firstNamevalue;
-      },
-      message: `{VALUE} should be capitalize`,
+    validator: function (firstName: string) {
+      const firstNamevalue = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+      return firstName == firstNamevalue;
     },
   },
   middleName: {
@@ -89,11 +86,7 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   name: { type: userNameSchema, required: [true, "name is required"] },
   gender: { type: String, enum: ["male", "female"] },
   dateOfBirth: { type: Date },
-  email: {
-    type: String,
-    requerd: true,
-    unique: true,
-  },
+  email: { type: String, requerd: [true, "Email is required"], unique: true },
   contactNumber: { type: String, required: [true, "contact number is required"] },
   emergencyContactNo: { type: String, required: [true, "emergency number is required"] },
   bloodGroup: {
@@ -113,7 +106,7 @@ const studenSchema = new Schema<TStudent, StudentModel>({
   },
   guardian: { type: guardianSchema, required: [true, "guardian is required"] },
   localGuardian: { type: localGuardianSchema, required: [true, "local guardian is required"] },
-  profileImage: { type: String, default: "" },
+  profileImage: { type: String, default: null },
   admissionSemister: { type: Schema.Types.ObjectId, ref: "AcademicSemister" },
   academicDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
   isDeleted: { type: Boolean, default: false },
@@ -133,10 +126,10 @@ studenSchema.pre("findOne", function (next) {
   next();
 });
 
-studenSchema.pre("aggregate", function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
+// studenSchema.pre("aggregate", function (next) {
+//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+//   next();
+// });
 
 studenSchema.statics.isUserExistByCustomId = async function (id: string) {
   const existingUser = await Student.findOne({ id });
