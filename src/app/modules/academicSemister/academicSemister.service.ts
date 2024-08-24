@@ -29,6 +29,7 @@ const getSemisterById = async (id: string) => {
   const result = await AcademicSemister.findById(id);
   return result;
 };
+
 // update the academic semister data
 const updateOneSemister = async (id: string, payLoad: Partial<TAcademicSemister>) => {
   const filter = { _id: id };
