@@ -15,8 +15,8 @@ export type TAdmin = {
   designation: string;
   name: TUserName;
   gender: TGender;
-  dateOfBirth?: Date;
   email: string;
+  dateOfBirth?: Date;
   contactNo: string;
   emergencyContactNo: string;
   bloodGroup?: TBloodGroup;

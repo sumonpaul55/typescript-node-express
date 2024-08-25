@@ -20,7 +20,7 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "User Email is required"],
       unique: true,
     },
     passwordChangedAt: { type: Date },

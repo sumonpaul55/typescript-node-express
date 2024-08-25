@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.post(
   "/create-student",
+  auth(USER_ROLE.admin),
   upload.single("file"),
   (req, res, next) => {
     req.body = JSON.parse(req.body.data);
@@ -22,10 +23,6 @@ router.post(
   userControllers.createStudent
 );
 router.post("/create-faculty", validateRequest(createFacultyValidationSchema), userControllers.createFaculty);
-router.post(
-  "/create-admin",
-  // auth(USER_ROLE.admin),
-  validateRequest(AdminValidations.createAdminValidationSchema),
-  userControllers.createAdmin
-);
+
+router.post("/create-admin", validateRequest(AdminValidations.createAdminValidationSchema), userControllers.createAdmin);
 export const UserRoute = router;

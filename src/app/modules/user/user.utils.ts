@@ -1,10 +1,11 @@
 import { TAcademicSemister } from "../academicSemister/academicSemisterInterFace";
 import { User } from "./user.model";
 
-const findLastStudentId = async () => {
+const findLastStudentId = async (yearAndCode: string) => {
   const lastStudent = await User.findOne(
     {
       role: "student",
+      id: { $regex: `${yearAndCode}` },
     },
     { id: 1, _id: 0 }
   )
@@ -17,19 +18,23 @@ const findLastStudentId = async () => {
 export const generateStudentId = async (payLoad: TAcademicSemister) => {
   // current number
   let currentId = (0).toString();
-  const lastStudentId = await findLastStudentId(); //2025010001
+
+  const curentSemisterCode = payLoad?.code;
+  const currentYear = payLoad?.year;
+  const yearAndCode = currentYear + curentSemisterCode;
+  // console.log(yearAndCode);
+  const lastStudentId = await findLastStudentId(yearAndCode); //2025010001
 
   const lastSemisterCode = lastStudentId?.substring(4, 6);
   const lastStudentYear = lastStudentId?.substring(0, 4);
 
-  const curentSemisterCode = payLoad?.code;
-  const currentYear = payLoad?.year;
   if (lastStudentId && lastSemisterCode === curentSemisterCode && lastStudentYear === currentYear) {
-    currentId = lastStudentId.substring(6);
+    currentId = lastStudentId.substring(6).toString();
   }
 
   const increamentId = (Number(currentId) + 1).toString().padStart(4, "0");
   const studentId = `${payLoad.year}${payLoad.code}${increamentId}`;
+
   return studentId;
 };
 // Faculty ID

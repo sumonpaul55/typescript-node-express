@@ -43,4 +43,5 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + "-" + uniqSuffix);
   },
 });
+
 export const upload = multer({ storage: storage });

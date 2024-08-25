@@ -17,7 +17,6 @@ import { Faculty } from "../Faculty/faculty.model";
 import { sendImageToCloudinary } from "../../utils/sendImagetoCloudinary";
 
 const createStudentDb = async (file: any, password: string, payLoad: TStudent) => {
-  // console.log(payLoad);
   // let define a user object
   const userData: Partial<TUser> = {};
   // set password in user object
@@ -140,20 +139,22 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
-
   //set student role
   userData.role = "admin";
 
   const session = await mongoose.startSession();
+
   try {
     session.startTransaction();
+    // set email
+    userData.email = payload.email;
     //set  generated id
     userData.id = await generateAdminId();
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session });
 
-    //create a admin
+    // create a admin
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create admin");
     }
@@ -162,6 +163,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     payload.user = newUser[0]._id; //reference _id
 
     // create a admin (transaction-2)
+
     const newAdmin = await Admin.create([payload], { session });
 
     if (!newAdmin.length) {
